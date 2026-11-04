@@ -12,6 +12,13 @@ pip install -e ".[data]"
 python scripts/build_wiod.py /path/to/WIOTS_in_R
 ```
 
+Real output (`src/gravity_inverted/data/wiod2016_real_output.csv`) from the
+Socio-Economic Accounts of the same release:
+
+```bash
+python scripts/build_sea.py /path/to/Socio_Economic_Accounts.xlsx
+```
+
 Own data: a long CSV with columns `exporter, importer, value`, including
 domestic sales (`exporter == importer`) for every economy. See
 `custom_template.csv`.

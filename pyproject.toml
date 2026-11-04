@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gravity-inverted"
-version = "0.1.0"
+version = "0.2.0"
 description = "Inverted gravity: the trade cost changes that deliver welfare and trade-flow targets (Anderson, Larch and Yotov 2026)"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -20,7 +20,7 @@ dev = ["pytest>=8"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-gravity_inverted = ["data/*.csv.gz"]
+gravity_inverted = ["data/*.csv.gz", "data/*.csv"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

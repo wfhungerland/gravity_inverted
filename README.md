@@ -1,9 +1,12 @@
 # gravity_inverted
 
-**What trade policy do we need to reach our economic goals?**
-This tool runs the structural gravity model backwards. You give it a target
-(a welfare gain, or an observed change in trade) and it returns the trade cost
-changes that deliver it.
+**What would it take?** How big a change in trade costs does it take to reach
+an economic goal? This tool runs the structural gravity model backwards. You
+give it a target (a welfare gain, or an observed change in trade) and it
+returns the trade cost changes that deliver it.
+
+Live app: <https://gravity-inverted.streamlit.app> · expert view:
+<https://gravity-inverted.streamlit.app/?view=expert>
 
 It implements Anderson, J. E., Larch, M. and Yotov, Y. V. (2026),
 *Inverted Gravity*, NBER Working Paper 35897,
@@ -32,6 +35,14 @@ pip install -e ".[app,dev]"
 streamlit run app.py
 ```
 
+The app opens in a plain-language view for lay readers and ministers, laid
+out like the [Konjunkturmonitor](https://wfhungerland.github.io/konjunkturmonitor/):
+three questions (get richer, trade walls, since 2000), one big number and one
+answer sentence each, ranges for other elasticities, CSV download, and a link
+in the address bar that reproduces every setting. `?view=expert` opens all
+tables, formulas, mixed instruments, the elasticity, real-output deflation and
+own data.
+
 ```python
 from gravity_inverted import WelfareTarget, solve_welfare_targets
 from gravity_inverted.data import wiod_baseline
@@ -45,8 +56,9 @@ res.equilibrium.table()     # prices, exports, domestic sales, welfare for all e
 ## Data
 
 WIOD 2016 release (Timmer et al. 2015), 43 economies plus rest of world,
-2000–2014, sectors summed to total bilateral flows. See [data/README.md](data/README.md)
-for the build step. Own data can be uploaded in the app as a long CSV
+2000–2014, sectors summed to total bilateral flows. Real gross output growth comes from the WIOD Socio-Economic Accounts
+(`scripts/build_sea.py`), used to separate price from volume growth for
+observed trade. See [data/README.md](data/README.md) for the build steps. Own data can be uploaded in the app as a long CSV
 (`exporter, importer, value`, including domestic sales).
 
 All welfare experiments start from a baseline without trade imbalances
@@ -81,9 +93,18 @@ instruments into the forward model.
   goods, so domestic shares are gross shares.
 * The model says nothing about the cost of cutting domestic trade costs.
 * For observed trade, the full GE split attributes all nominal output growth
-  to producer prices unless real output growth is supplied (`Q_hat`).
+  to producer prices unless real output growth is supplied (`Q_hat`); the app
+  uses the WIOD Socio-Economic Accounts for this by default.
+* Data end in 2014. Newer world input-output tables (e.g. OECD ICIO) could be
+  loaded through the CSV upload in the expert view.
+
+## Feedback
+
+Problems and suggestions: <https://github.com/wfhungerland/gravity_inverted/issues>.
 
 ## Citation
+
+See `CITATION.cff`.
 
 Anderson, J. E., Larch, M. and Yotov, Y. V. (2026). *Inverted Gravity*.
 NBER Working Paper 35897.
