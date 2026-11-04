@@ -186,3 +186,30 @@ def test_table_d6():
     assert abs(inv.pct("mge")[c, off].mean() - (-32.9)) < 0.051
     assert abs(inv.pct("full_ge")[c, off].mean() - (-79.1)) < 0.051
     assert abs(inv.pct("full_ge")[off, c].mean() - 268.3) < 0.051
+
+
+# Table D6, Panel B, last column: producer prices net of real output growth
+def test_table_d6_real_output():
+    from gravity_inverted.data import has_real_output, wiod_real_output_growth
+    if not has_real_output():
+        pytest.skip("real output not built")
+    countries, X00 = wiod_flows(2000)
+    _, X14 = wiod_flows(2014)
+    Q = wiod_real_output_growth(countries, 2000, 2014)
+    idx = {c: countries.index(c) for c in ("CHN", "JPN", "USA", "ROW")}
+    for c, v in {"CHN": 360.4, "JPN": -1.8, "USA": 19.8, "ROW": 44.1}.items():
+        assert abs(pct(Q[idx[c]]) - v) < 0.051
+    inv = invert_trade_flows(countries, X00, X14, SIGMA, Q_hat=Q)
+    full = inv.pct("full_ge")
+    c, u, j = idx["CHN"], idx["USA"], idx["JPN"]
+    assert abs(full[c, u] - (-53.8)) < 0.051
+    assert abs(full[u, c] - 55.5) < 0.051
+    def avg_exp(k):
+        return np.delete(full[k], k).mean()
+    def avg_imp(k):
+        return np.delete(full[:, k], k).mean()
+    assert abs(avg_exp(c) - (-35.2)) < 0.051
+    assert abs(avg_imp(c) - 8.3) < 0.051
+    assert abs(avg_exp(j) - 132.3) < 0.051
+    assert abs(avg_exp(u) - 59.7) < 0.051
+    assert abs(avg_imp(u) - (-29.1)) < 0.051

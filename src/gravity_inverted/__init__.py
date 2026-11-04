@@ -17,4 +17,4 @@ __all__ = [
     "domestic_bound_first_order", "import_bound", "solve_welfare_targets",
     "TradeCostInversion", "invert_trade_flows", "approx", "data",
 ]
-__version__ = "0.1.0"
+__version__ = "0.2.0"

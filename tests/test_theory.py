@@ -99,3 +99,31 @@ def test_lemma2_rationalizes_flows(base):
     inv = invert_trade_flows(base.countries, base.X, eq.X, SIGMA)
     assert np.allclose(inv.full_ge, tau, rtol=1e-9)
     assert np.allclose(inv.symmetric, np.sqrt(inv.full_ge * inv.full_ge.T))
+
+
+def test_restore_after_wall_returns_to_baseline_welfare(base):
+    from gravity_inverted.scenarios import wall_and_fix
+    r = wall_and_fix(base, "C1", 40, SIGMA)
+    j = base.index("C1")
+    tau = np.ones((base.n, base.n))
+    tau[np.arange(base.n) != j, j] = 1.4
+    tau[j, j] = 1 + r.restore / 100
+    assert np.isclose(solve_forward(base, tau, SIGMA).W_hat[j], 1.0, atol=1e-10)
+    assert r.loss < 0 and r.restore < 0 and r.equivalent < 0
+
+
+def test_spillover_ratio_guard():
+    import pandas as pd
+    from gravity_inverted.scenarios import WallResult
+    r = WallResult(-1.0, pd.Series([-0.2, -0.3]), -1.0, -1.0, pd.Series([0.001, -0.001]))
+    assert r.spillover_ratio() is None
+
+
+def test_csv_upload_floor(tmp_path):
+    from gravity_inverted.data import flows_from_csv
+    p = tmp_path / "f.csv"
+    p.write_text("exporter,importer,value\nA,A,10\nA,B,0\nB,A,2\nB,B,8\n")
+    with pytest.raises(ValueError):
+        flows_from_csv(p)
+    c, X, n = flows_from_csv(p, floor=True)
+    assert n == 1 and X[0, 1] > 0 and c == ("A", "B")
