@@ -32,6 +32,11 @@ pip install -e ".[app,dev]"
 streamlit run app.py
 ```
 
+The app opens in a plain-language view for children, lay readers and
+ministers: three stories (get richer, trade walls, since 2000), one sentence
+per answer, no symbols. A toggle in the sidebar switches to the expert view
+with all tables, formulas, the elasticity and own data.
+
 ```python
 from gravity_inverted import WelfareTarget, solve_welfare_targets
 from gravity_inverted.data import wiod_baseline
